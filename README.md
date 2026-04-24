@@ -14,6 +14,11 @@ tail -f ~/.nodequality-logs/nodequality_*.log
 - `.../results/result_时间戳.zip`
 - `.../results/summary_时间戳.txt`
 
+如果使用了 `-u` 上传，`summary_*.txt` 里会额外记录：
+- `upload_api=...`
+- `upload_url=...`（若接口返回了可访问链接）
+- `upload_response=...`
+
 ## 可选参数
 - `-u`：上传结果到 NodeQuality 网页（默认不上传）
 - `-4` / `-6`：强制 IPv4/IPv6

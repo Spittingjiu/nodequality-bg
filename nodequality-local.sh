@@ -498,7 +498,21 @@ function upload_result(){
     zip_file="$(package_results_local)"
 
     if [[ "$upload_remote_result" -eq 1 ]]; then
-        base64 "$zip_file" | curl -fsSL -X POST --data-binary @- "$uploadAPI" || true
+        local upload_resp upload_url
+        upload_resp="$(base64 "$zip_file" | curl -fsSL -X POST --data-binary @- "$uploadAPI" || true)"
+        upload_url="$(printf '%s' "$upload_resp" | grep -Eo 'https?://[^"[:space:]]+' | head -n1 || true)"
+
+        {
+          echo "upload_api=$uploadAPI"
+          if [[ -n "$upload_url" ]]; then
+            echo "upload_url=$upload_url"
+          fi
+          if [[ -n "$upload_resp" ]]; then
+            echo "upload_response=$upload_resp"
+          fi
+        } >> "$result_summary_file"
+
+        [[ -n "$upload_url" ]] && echo "upload_url: $upload_url"
         echo
     fi
 
