@@ -1,6 +1,6 @@
 # nodequality-bg
 
-一键后台运行 NodeQuality（默认本地保存结果，不上传网页）。
+一键后台运行 NodeQuality（默认本地保存结果，并自动上传网页）。
 
 ## 一键命令
 bash <(curl -fsSL https://raw.githubusercontent.com/Spittingjiu/nodequality-bg/main/run.sh)
@@ -23,7 +23,7 @@ tail -f ~/.nodequality-logs/nodequality_*.log
 - `upload_response=...`
 
 ## 可选参数
-- `-u`：上传结果到 NodeQuality 网页（默认不上传）
+- `-n`：不上传 NodeQuality 网页（默认会上传）
 - `-4` / `-6`：强制 IPv4/IPv6
 - `-E`：英文输出
 

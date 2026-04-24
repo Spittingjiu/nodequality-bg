@@ -28,7 +28,7 @@ err_code=0
 # local enhancements
 run_in_background=0
 keep_local_result=1
-upload_remote_result=0
+upload_remote_result=1
 non_interactive=1
 result_summary_file=""
 bg_log_file=""
@@ -153,7 +153,7 @@ function _green_bold() {
 }
 
 function get_opts(){
-    while getopts ":D:d:46EeBluh" opt; do
+    while getopts ":D:d:46EeBluhn" opt; do
         case $opt in
             4)
                 if [[ "$opt_ipv" == "-6" ]]; then
@@ -196,7 +196,8 @@ function get_opts(){
 NodeQuality Local Enhanced Usage:
   -B   run in background (nohup-safe)
   -l   keep local result package (default on)
-  -u   upload to nodequality web (default off)
+  -u   upload to nodequality web (default on)
+  -n   do NOT upload to nodequality web
   -4/-6  force IPv4/IPv6
   -E   English UI
   -D <dir>  work dir base
@@ -208,6 +209,9 @@ Environment:
   NQ_RUN_BT=y|n        (default n)
 EOF
                 exit 0
+                ;;
+            n)
+                upload_remote_result=0
                 ;;
             :) 
                 echo "$(L err02)"
