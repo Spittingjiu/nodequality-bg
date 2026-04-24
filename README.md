@@ -29,12 +29,11 @@
 bash <(curl -fsSL https://raw.githubusercontent.com/Spittingjiu/nodequality-bg/main/run.sh)
 ```
 
-默认行为：
-- 后台运行
-- 自动上传网页
-- 自动写 `/root/nodequality_upload_url.txt`
-- 同时保留本地原始结果目录（不打包）
-- 启动后会实时显示后台日志（像原版一样有过程输出），你可随时 `Ctrl+C` 退出查看，任务继续跑
+输入一键命令后会出现菜单：
+- `1` 运行测试脚本
+- `2` 查看最近任务（执行 `tail -f ~/.nodequality-logs/nodequality_*.log`）
+- `3` 查看最近一次上传网址（读取 `/root/nodequality_upload_url.txt`）
+- `4` 清除所有痕迹
 
 ---
 
