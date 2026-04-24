@@ -39,9 +39,11 @@
 
 ## 一键使用（推荐）
 
-直接执行：
+直接执行（代码块右上角可一键复制）：
 
-`bash <(curl -fsSL https://raw.githubusercontent.com/Spittingjiu/nodequality-bg/main/run.sh)`
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/Spittingjiu/nodequality-bg/main/run.sh)
+```
 
 默认行为：
 - 后台运行
