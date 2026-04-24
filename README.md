@@ -50,6 +50,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/Spittingjiu/nodequality-bg/m
 - 自动上传网页
 - 自动写 `/root/nodequality_upload_url.txt`
 - 同时保留本地原始结果目录（不打包）
+- 启动后会实时显示后台日志（像原版一样有过程输出），你可随时 `Ctrl+C` 退出查看，任务继续跑
 
 ---
 
