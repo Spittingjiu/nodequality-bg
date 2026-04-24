@@ -13,6 +13,10 @@ install_main_script() {
 }
 
 install_nq_command() {
+  if [[ ! -f "$INSTALL_DIR/run.sh" ]]; then
+    # fallback for process substitution mode: bash <(curl ...)
+    curl -fsSL "https://raw.githubusercontent.com/Spittingjiu/nodequality-bg/main/run.sh" -o "$INSTALL_DIR/run.sh"
+  fi
   cp "$INSTALL_DIR/run.sh" "$NQ_BIN"
   chmod +x "$NQ_BIN"
 }
