@@ -497,38 +497,16 @@ function package_results_local(){
     } > "$result_summary_file"
 }
 
-function make_zip(){
-    local src_dir="$1"
-    local dst_zip="$2"
-    if command -v zip >/dev/null 2>&1; then
-        (cd "$src_dir" && zip -qr "$dst_zip" .)
-    elif command -v python3 >/dev/null 2>&1; then
-        python3 - "$src_dir" "$dst_zip" <<'PY'
-import os, sys, zipfile
-src, dst = sys.argv[1], sys.argv[2]
-with zipfile.ZipFile(dst, 'w', zipfile.ZIP_DEFLATED) as z:
-    for root, _, files in os.walk(src):
-        for f in files:
-            p = os.path.join(root, f)
-            z.write(p, os.path.relpath(p, src))
-PY
-    else
-        return 1
-    fi
-}
-
 function upload_result(){
     package_results_local
 
     if [[ "$upload_remote_result" -eq 1 ]]; then
-        local upload_resp upload_url tmp_zip
-        tmp_zip="$(mktemp /tmp/nodequality_upload_${current_time}_XXXXXX.zip)"
-        if ! make_zip "$raw_result_dir" "$tmp_zip"; then
-            echo "zip unavailable: please install zip or python3" >&2
-            return 1
-        fi
-        upload_resp="$(base64 "$tmp_zip" | curl -fsSL -X POST --data-binary @- "$uploadAPI" || true)"
-        rm -f "$tmp_zip"
+        local upload_resp upload_url
+
+        # keep upstream upload behavior: zip in BenchOs chroot, then upload base64 zip
+        chroot_run zip -j - "/result/*" > "$work_dir/result.zip"
+        upload_resp="$(base64 "$work_dir/result.zip" | curl -fsSL -X POST --data-binary @- "$uploadAPI" || true)"
+        rm -f "$work_dir/result.zip"
 
         upload_url="$(printf '%s' "$upload_resp" | grep -Eo 'https?://[^"[:space:]]+' | head -n1 || true)"
 
