@@ -512,7 +512,16 @@ function upload_result(){
           fi
         } >> "$result_summary_file"
 
+        # simple local pointer requested by user
+        {
+          echo "upload_api=$uploadAPI"
+          [[ -n "$upload_url" ]] && echo "upload_url=$upload_url"
+          [[ -n "$upload_resp" ]] && echo "upload_response=$upload_resp"
+          echo "updated_at=$(date '+%F %T %Z')"
+        } > /root/nodequality_upload_url.txt
+
         [[ -n "$upload_url" ]] && echo "upload_url: $upload_url"
+        echo "upload_txt: /root/nodequality_upload_url.txt"
         echo
     fi
 

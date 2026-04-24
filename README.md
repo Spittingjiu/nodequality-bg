@@ -14,7 +14,10 @@ tail -f ~/.nodequality-logs/nodequality_*.log
 - `.../results/result_时间戳.zip`
 - `.../results/summary_时间戳.txt`
 
-如果使用了 `-u` 上传，`summary_*.txt` 里会额外记录：
+如果使用了 `-u` 上传，会额外生成固定文件：
+- `/root/nodequality_upload_url.txt`
+
+同时 `summary_*.txt` 里也会记录：
 - `upload_api=...`
 - `upload_url=...`（若接口返回了可访问链接）
 - `upload_response=...`
