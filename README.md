@@ -3,6 +3,11 @@
 在原版 NodeQuality 基础上做的“可远程一键 + 默认后台 + 本地留痕”增强版。  
 目标：保留原项目检测能力，同时把实际使用流程变成最省心。
 
+## 声明
+
+- 检测核心仍依赖原 NodeQuality 生态接口（`Hardware.Check.Place / IP.Check.Place / Net.Check.Place / api.nodequality.com`）。
+- 本项目主要做执行体验优化（后台化、默认参数、结果落地、操作简化），不改变原始检测业务语义。
+
 ## 原项目
 - 原仓库：`https://github.com/LloydAsp/NodeQuality`
 - 原一键：`bash <(curl -sL https://run.NodeQuality.com)`
@@ -77,32 +82,3 @@ bash <(curl -fsSL https://raw.githubusercontent.com/Spittingjiu/nodequality-bg/m
 - `-E`：英文输出
 - `-D <dir>`：自定义工作目录基路径
 
----
-
-## 可选环境变量
-
-- `NQ_HQ_MODE=f|y|v|n`（默认 `f`，快速硬件测试）
-- `NQ_RUN_IQ=y|n`（默认 `y`）
-- `NQ_RUN_NQ=y|l|n`（默认 `y`）
-- `NQ_RUN_BT=y|n`（默认 `n`）
-
-示例：
-
-`NQ_HQ_MODE=v bash <(curl -fsSL https://raw.githubusercontent.com/Spittingjiu/nodequality-bg/main/run.sh)`
-
----
-
-## 目录与文件说明
-
-- 在线入口脚本：`run.sh`
-- 增强主脚本：`nodequality-local.sh`
-- 远端安装目录：`/opt/nodequality-bg/`
-- 固定上传信息文件：`/root/nodequality_upload_url.txt`
-- 后台日志目录：`~/.nodequality-logs/`
-
----
-
-## 声明
-
-- 检测核心仍依赖原 NodeQuality 生态接口（`Hardware.Check.Place / IP.Check.Place / Net.Check.Place / api.nodequality.com`）。
-- 本项目主要做执行体验优化（后台化、默认参数、结果落地、操作简化），不改变原始检测业务语义。
