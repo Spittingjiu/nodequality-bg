@@ -34,8 +34,14 @@ run_test() {
 
 view_recent_task() {
   mkdir -p "$LOG_DIR"
-  echo "执行: tail -f ~/.nodequality-logs/nodequality_*.log"
-  tail -f ~/.nodequality-logs/nodequality_*.log
+  local latest_log
+  latest_log="$(ls -1t "$LOG_DIR"/nodequality_*.log 2>/dev/null | head -n1 || true)"
+  if [[ -z "$latest_log" ]]; then
+    echo "未找到任务日志：$LOG_DIR/nodequality_*.log"
+    return 1
+  fi
+  echo "读取最新日志：$latest_log"
+  tail -f "$latest_log"
 }
 
 view_upload_url() {
