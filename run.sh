@@ -12,7 +12,7 @@ install_main_script() {
 }
 
 run_test() {
-  local run_out log_file
+  local run_out log_file run_pid
   run_out="$({
     env NQ_HQ_MODE="${NQ_HQ_MODE:-f}" \
         NQ_RUN_IQ="${NQ_RUN_IQ:-y}" \
@@ -24,11 +24,16 @@ run_test() {
   echo "$run_out"
 
   log_file="$(printf '%s\n' "$run_out" | awk -F= '/^log=/{print $2; exit}')"
+  run_pid="$(printf '%s\n' "$run_out" | awk -F= '/^pid=/{print $2; exit}')"
   if [[ -n "$log_file" && -t 1 ]]; then
     echo
     echo "[nodequality-bg] 正在实时显示测试日志（Ctrl+C 仅退出查看，后台任务继续）"
     echo
-    tail -f "$log_file" || true
+    if [[ -n "$run_pid" ]] && tail --help 2>/dev/null | grep -q -- '--pid'; then
+      tail --pid="$run_pid" -f "$log_file" || true
+    else
+      tail -f "$log_file" || true
+    fi
   fi
 }
 

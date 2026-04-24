@@ -31,6 +31,7 @@ keep_local_result=1
 upload_remote_result=1
 non_interactive=1
 result_summary_file=""
+raw_result_dir=""
 bg_log_file=""
 default_hq_mode="${NQ_HQ_MODE:-f}"   # y/f/v/n, default fast for CPU-heavy test
 default_iq_mode="${NQ_RUN_IQ:-y}"    # y/n
@@ -480,32 +481,52 @@ uploadAPI="https://api.nodequality.com/api/v1/record"
 
 function package_results_local(){
     local out_dir="${work_dir}/results"
-    local raw_dir="$out_dir/raw_${current_time}"
-    mkdir -p "$raw_dir"
+    raw_result_dir="$out_dir/raw_${current_time}"
+    mkdir -p "$raw_result_dir"
     result_summary_file="$out_dir/summary_${current_time}.txt"
 
     # keep plain files locally (no local zip package)
-    cp -a "$work_dir/BenchOs/result/." "$raw_dir/"
+    cp -a "$work_dir/BenchOs/result/." "$raw_result_dir/"
 
     {
       echo "time=$current_time"
       echo "work_dir=$work_dir"
       echo "result_dir=$work_dir/BenchOs/result"
-      echo "raw_saved_dir=$raw_dir"
+      echo "raw_saved_dir=$raw_result_dir"
       echo "hq=$run_hardware_quality_test iq=$run_ip_quality_test nq=$run_net_quality_test bt=$run_net_trace_test"
     } > "$result_summary_file"
+}
 
-    echo "$raw_dir"
+function make_zip(){
+    local src_dir="$1"
+    local dst_zip="$2"
+    if command -v zip >/dev/null 2>&1; then
+        (cd "$src_dir" && zip -qr "$dst_zip" .)
+    elif command -v python3 >/dev/null 2>&1; then
+        python3 - "$src_dir" "$dst_zip" <<'PY'
+import os, sys, zipfile
+src, dst = sys.argv[1], sys.argv[2]
+with zipfile.ZipFile(dst, 'w', zipfile.ZIP_DEFLATED) as z:
+    for root, _, files in os.walk(src):
+        for f in files:
+            p = os.path.join(root, f)
+            z.write(p, os.path.relpath(p, src))
+PY
+    else
+        return 1
+    fi
 }
 
 function upload_result(){
-    local raw_dir
-    raw_dir="$(package_results_local)"
+    package_results_local
 
     if [[ "$upload_remote_result" -eq 1 ]]; then
         local upload_resp upload_url tmp_zip
         tmp_zip="$(mktemp /tmp/nodequality_upload_${current_time}_XXXXXX.zip)"
-        (cd "$raw_dir" && zip -qr "$tmp_zip" .)
+        if ! make_zip "$raw_result_dir" "$tmp_zip"; then
+            echo "zip unavailable: please install zip or python3" >&2
+            return 1
+        fi
         upload_resp="$(base64 "$tmp_zip" | curl -fsSL -X POST --data-binary @- "$uploadAPI" || true)"
         rm -f "$tmp_zip"
 
@@ -536,7 +557,7 @@ function upload_result(){
     fi
 
     if [[ -n "$result_summary_file" ]]; then
-        echo "saved_raw: $raw_dir"
+        echo "saved_raw: $raw_result_dir"
         echo "summary: $result_summary_file"
     fi
 }
