@@ -4,11 +4,17 @@ set -euo pipefail
 INSTALL_DIR="/opt/nodequality-bg"
 LOG_DIR="/root/.nodequality-logs"
 UPLOAD_TXT="/root/.nodequality-logs/upload_url.txt"
+NQ_BIN="/usr/local/bin/nq"
 
 install_main_script() {
   mkdir -p "$INSTALL_DIR"
   curl -fsSL "https://raw.githubusercontent.com/Spittingjiu/nodequality-bg/main/nodequality-local.sh" -o "$INSTALL_DIR/nodequality-local.sh"
   chmod +x "$INSTALL_DIR/nodequality-local.sh"
+}
+
+install_nq_command() {
+  cp "$INSTALL_DIR/run.sh" "$NQ_BIN"
+  chmod +x "$NQ_BIN"
 }
 
 run_test() {
@@ -79,6 +85,12 @@ EOF
 
 main() {
   install_main_script
+
+  # self-install runner for local shortcut command: nq
+  if [[ -f "$0" ]]; then
+    cp "$0" "$INSTALL_DIR/run.sh" || true
+  fi
+  install_nq_command
 
   if [[ ! -t 0 ]]; then
     run_test

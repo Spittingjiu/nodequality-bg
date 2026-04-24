@@ -29,7 +29,10 @@
 bash <(curl -fsSL https://raw.githubusercontent.com/Spittingjiu/nodequality-bg/main/run.sh)
 ```
 
-输入一键命令后会出现菜单：
+输入一键命令后会出现菜单，并自动安装 `nq` 命令到 `/usr/local/bin/nq`。
+后续你在 VPS 上直接输入 `nq` 就能打开同一个菜单。
+
+菜单内容：
 - `1` 运行测试脚本
 - `2` 查看最近任务（自动选择最新日志并 `tail -f`）
 - `3` 查看最近一次上传网址（读取 `/root/.nodequality-logs/upload_url.txt`）
