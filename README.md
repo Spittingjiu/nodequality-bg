@@ -32,7 +32,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/Spittingjiu/nodequality-bg/m
 输入一键命令后会出现菜单：
 - `1` 运行测试脚本
 - `2` 查看最近任务（执行 `tail -f ~/.nodequality-logs/nodequality_*.log`）
-- `3` 查看最近一次上传网址（读取 `/root/nodequality_upload_url.txt`）
+- `3` 查看最近一次上传网址（读取 `/root/.nodequality-logs/upload_url.txt`）
 - `4` 清除所有痕迹
 
 ---
@@ -44,7 +44,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/Spittingjiu/nodequality-bg/m
 - `tail -f ~/.nodequality-logs/nodequality_*.log`
 
 查看上传地址：
-- `cat /root/nodequality_upload_url.txt`
+- `cat /root/.nodequality-logs/upload_url.txt`
 
 ---
 

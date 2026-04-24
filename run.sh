@@ -3,7 +3,7 @@ set -euo pipefail
 
 INSTALL_DIR="/opt/nodequality-bg"
 LOG_DIR="/root/.nodequality-logs"
-UPLOAD_TXT="/root/nodequality_upload_url.txt"
+UPLOAD_TXT="/root/.nodequality-logs/upload_url.txt"
 
 install_main_script() {
   mkdir -p "$INSTALL_DIR"
@@ -48,6 +48,7 @@ view_upload_url() {
 
 clear_all_traces() {
   rm -f "$UPLOAD_TXT"
+  rm -f /root/nodequality_upload_url.txt
   rm -rf "$LOG_DIR"
   rm -rf /root/.nodequality*
   rm -rf "$INSTALL_DIR"
