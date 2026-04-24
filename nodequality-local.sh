@@ -480,30 +480,35 @@ uploadAPI="https://api.nodequality.com/api/v1/record"
 
 function package_results_local(){
     local out_dir="${work_dir}/results"
-    mkdir -p "$out_dir"
+    local raw_dir="$out_dir/raw_${current_time}"
+    mkdir -p "$raw_dir"
     result_summary_file="$out_dir/summary_${current_time}.txt"
 
-    # package everything from BenchOs/result into local zip
-    (cd "$work_dir/BenchOs/result" && zip -qr "$out_dir/result_${current_time}.zip" .)
+    # keep plain files locally (no local zip package)
+    cp -a "$work_dir/BenchOs/result/." "$raw_dir/"
 
     {
       echo "time=$current_time"
       echo "work_dir=$work_dir"
       echo "result_dir=$work_dir/BenchOs/result"
-      echo "zip=$out_dir/result_${current_time}.zip"
+      echo "raw_saved_dir=$raw_dir"
       echo "hq=$run_hardware_quality_test iq=$run_ip_quality_test nq=$run_net_quality_test bt=$run_net_trace_test"
     } > "$result_summary_file"
 
-    echo "$out_dir/result_${current_time}.zip"
+    echo "$raw_dir"
 }
 
 function upload_result(){
-    local zip_file
-    zip_file="$(package_results_local)"
+    local raw_dir
+    raw_dir="$(package_results_local)"
 
     if [[ "$upload_remote_result" -eq 1 ]]; then
-        local upload_resp upload_url
-        upload_resp="$(base64 "$zip_file" | curl -fsSL -X POST --data-binary @- "$uploadAPI" || true)"
+        local upload_resp upload_url tmp_zip
+        tmp_zip="$(mktemp /tmp/nodequality_upload_${current_time}_XXXXXX.zip)"
+        (cd "$raw_dir" && zip -qr "$tmp_zip" .)
+        upload_resp="$(base64 "$tmp_zip" | curl -fsSL -X POST --data-binary @- "$uploadAPI" || true)"
+        rm -f "$tmp_zip"
+
         upload_url="$(printf '%s' "$upload_resp" | grep -Eo 'https?://[^"[:space:]]+' | head -n1 || true)"
 
         {
@@ -530,7 +535,7 @@ function upload_result(){
     fi
 
     if [[ -n "$result_summary_file" ]]; then
-        echo "saved: $zip_file"
+        echo "saved_raw: $raw_dir"
         echo "summary: $result_summary_file"
     fi
 }
