@@ -27,7 +27,7 @@ err_code=0
 
 # local enhancements
 run_in_background=0
-keep_local_result=1
+keep_local_result=0
 upload_remote_result=1
 non_interactive=1
 result_summary_file=""
@@ -480,7 +480,7 @@ function run_net_trace(){
 uploadAPI="https://api.nodequality.com/api/v1/record"
 
 function package_results_local(){
-    local out_dir="${work_dir}/results"
+    local out_dir="/root/.nodequality-logs/results"
     raw_result_dir="$out_dir/raw_${current_time}"
     mkdir -p "$raw_result_dir"
     result_summary_file="$out_dir/summary_${current_time}.txt"
